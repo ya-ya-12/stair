@@ -21,7 +21,7 @@ Temp/
 *.opendb
 *.VC.db
 *.tmp
-#*.log
+*.log
 
 # Visual Studio / VS Code
 .vscode/
