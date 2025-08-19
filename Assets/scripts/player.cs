@@ -18,6 +18,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
     SpriteRenderer render; // 精靈渲染器
     AudioSource deathsound; // 音效來源
     [SerializeField] GameObject replaybutton; // 按鈕
+    private bool isDead = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() //只會輸出一次
     {
@@ -27,6 +28,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
         anim = GetComponent<Animator>(); // 獲取動畫控制器
         render = GetComponent<SpriteRenderer>(); // 獲取精靈渲染器
         deathsound = GetComponent<AudioSource>(); // 獲取音效來源
+        isDead = false;
     }
 
     // Update is called once per frame
@@ -51,6 +53,13 @@ public class NewMonoBehaviourScript : MonoBehaviour
         }
         Updatescore(); // 更新分數
     }
+    void Update()
+    {
+        if (isDead && Input.GetKeyDown(KeyCode.Space))
+        {
+        replay(); // 按空白鍵重玩
+        }
+    }
     void OnCollisionEnter2D(Collision2D other)  //實際碰撞
     {
         if (other.gameObject.tag == "normal")
@@ -74,9 +83,12 @@ public class NewMonoBehaviourScript : MonoBehaviour
         }
         else if (other.gameObject.tag == "ceiling")
         {
+            if (currentFloor != null)
+            {
             currentFloor.GetComponent<BoxCollider2D>().enabled = false; // 禁用當前地板的碰撞器
-            ModifyHp(-3);
-            anim.SetTrigger("hurt"); // 受傷動畫
+            }
+            ModifyHp(-3); // 受傷動畫
+            anim.SetTrigger("hurt");
             other.gameObject.GetComponent<AudioSource>().Play(); // 播放音效
         }
     }
@@ -130,6 +142,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
         deathsound.Play(); // 播放死亡
         Time.timeScale = 0f; // 停止
         replaybutton.SetActive(true); // 顯示按鈕
+        isDead = true; // 設定死亡狀態
     }
     public void replay()
     {
